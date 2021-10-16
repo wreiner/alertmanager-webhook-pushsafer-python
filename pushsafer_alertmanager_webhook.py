@@ -1,4 +1,5 @@
 import json
+import configparser
 import sys
 import logging
 
@@ -13,37 +14,27 @@ from pushsafer import init, Client
 # global variables
 conf_data = None
 conf_file = "/etc/pushsafer_alertmanager_webhook.conf"
+
 app = Flask(__name__)
 
-localinit()
+json_data = open(conf_file).read()
+conf_data = json.loads(json_data)
 
-def fatal_end(msg):
-    print(msg)
-    sys.exit(1)
+# set the secret key for the flask app
+app.secret_key = conf_data.get("secret_key", None)
 
-def localinit():
-    json_data = open(conf_file).read()
-    conf_data = json.loads(json_data)
+# enable and configure basic authentication
+basic_auth = BasicAuth(app)
+app.config['BASIC_AUTH_FORCE'] = True
+app.config['BASIC_AUTH_USERNAME'] = conf_data.get("basic_auth_username", None)
+app.config['BASIC_AUTH_PASSWORD'] = conf_data.get("basic_auth_password", None)
 
-    app.secret_key = conf_data.get("secret_key", None)
-    if app.secret_key is None:
-        fatal_end("no secret_key supplied")
-
-    # enable and configure basic authentication
-    basic_auth = BasicAuth(app)
-    app.config['BASIC_AUTH_FORCE'] = True
-    app.config['BASIC_AUTH_USERNAME'] = conf_data.get("basic_auth_username", "changeme")
-    app.config['BASIC_AUTH_PASSWORD'] = conf_data.get("basic_auth_password", "changeme")
-    print(app.config['BASIC_AUTH_USERNAME'])
-    print(app.config['BASIC_AUTH_PASSWORD'])
-    print(app.secret_key)
-
-def apush_notification(subject, message):
-    print(subject)
-    print(message)
+# set pushsafer settings
+app.config['pushsafer_privatekey'] = conf_data.get("pushsafer_privatekey", None)
+app.config['pushsafer_device_or_group'] = conf_data.get("pushsafer_device_or_group", None)
 
 def push_notification(push_subject, message):
-    init(conf_data["pushsafer_privatekey"])
+    init(app.config.get("pushsafer_privatekey", None))
 
     body_text = message
     icon = 5
@@ -64,7 +55,7 @@ def push_notification(push_subject, message):
     Client("").send_message(
             body_text,
             push_subject,
-            conf_data["pushsafer_device_or_group"],
+            app.config.get("pushsafer_device_or_group", None),
             icon,
             sound,
             vibration,

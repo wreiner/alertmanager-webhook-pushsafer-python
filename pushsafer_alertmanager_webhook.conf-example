@@ -1,11 +1,19 @@
 {
+    # configuration for the dev server
     "dev_listen_address": "127.0.0.1",
     "dev_port": 9196,
 
+    # a secret key for the flask webapp
     "secret_key": "changeme",
+
+    # basic auth credentials for the webhook
     "basic_auth_username": "changeme-user",
     "basic_auth_password": "changeme-password",
 
+    # pushsafer privatekey (from website)
     "pushsafer_privatekey": "somekey",
+
+    # in pushsafer configured device or device group
+    # which should get notifications
     "pushsafer_device_or_group": "dg123"
 }
