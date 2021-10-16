@@ -4,7 +4,7 @@ WORKDIR /alertmanager-webhook-pushsafer-python
 COPY . /alertmanager-webhook-pushsafer-python
 
 RUN apk update \
-    && apk add py-pip bash gcc python3-dev musl-dev libffi-dev openssl-dev \
+    && apk add python3 py-pip bash gcc python3-dev musl-dev libffi-dev openssl-dev \
     && rm -rf /var/cache/apk/* \
     && pip install -r requirements.txt \
     && apk del py-pip gcc python3-dev musl-dev libffi-dev openssl-dev \
