@@ -1,0 +1,11 @@
+{
+    "dev_listen_address": "127.0.0.1",
+    "dev_port": 9196,
+
+    "secret_key": "changeme",
+    "basic_auth_username": "changeme-user",
+    "basic_auth_password": "changeme-password",
+
+    "pushsafer_privatekey": "somekey",
+    "pushsafer_device_or_group": "dg123"
+}

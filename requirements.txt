@@ -1,0 +1,6 @@
+flask
+python-telegram-bot
+Flask-BasicAuth
+gunicorn
+python-pushsafer
+python-dateutil
